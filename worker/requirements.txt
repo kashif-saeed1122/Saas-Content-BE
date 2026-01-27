@@ -1,0 +1,13 @@
+langgraph
+langchain-openai
+langchain-core
+playwright==1.39.0
+psycopg2-binary
+sqlalchemy
+python-dotenv
+awslambdaric
+requests
+gnews
+langchain
+langchain-community
+playwright
