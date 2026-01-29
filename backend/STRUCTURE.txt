@@ -1,0 +1,59 @@
+backend_integration/
+│
+├── 📁 migrations/
+│   └── 002_add_campaigns_credits.py      # Database migration script
+│
+├── 📁 routers/                           # API route handlers (NEW)
+│   ├── campaigns.py                      # Campaign endpoints
+│   ├── credits.py                        # Credit management endpoints
+│   ├── api_keys.py                       # API key endpoints
+│   └── integrations.py                   # Webhook integration endpoints
+│
+├── 📁 services/                          # Business logic (NEW)
+│   ├── credit_service.py                 # Token→Credit conversion, deduction
+│   ├── campaign_service.py               # Campaign CRUD operations
+│   ├── api_key_service.py                # API key generation/validation
+│   └── posting_service.py                # Webhook posting logic
+│
+├── 📁 tasks/                             # Celery background tasks (NEW)
+│   ├── campaign_tasks.py                 # Daily campaign generation
+│   └── posting_tasks.py                  # Article webhook posting
+│
+├── 📁 middleware/                        # Authentication middleware (NEW)
+│   └── api_key_auth.py                   # API key validation
+│
+├── 📄 models.py                          # Database models (UPDATED)
+├── 📄 schemas.py                         # Pydantic schemas (UPDATED)
+├── 📄 main.py                            # FastAPI app (UPDATED)
+│
+├── 📄 celery_app.py                      # Celery initialization (NEW)
+├── 📄 celery_config.py                   # Celery settings (NEW)
+│
+├── 📄 docker-compose.yml                 # Redis container (NEW)
+├── 📄 requirements.txt                   # Python dependencies (UPDATED)
+├── 📄 .env.example                       # Environment template (NEW)
+│
+├── 📄 README.md                          # Setup documentation (NEW)
+├── 📄 INTEGRATION_GUIDE.md               # Complete guide (NEW)
+│
+├── 🔧 start.sh                           # Start all services (NEW)
+└── 🔧 stop.sh                            # Stop all services (NEW)
+
+
+EXISTING FILES (Keep as-is):
+├── database.py                           # Database connection
+├── config.py                             # Configuration
+├── lambda_trigger.py                     # Lambda job triggering
+├── queue_service.py                      # SQS service
+└── agents/
+    └── title_agent.py                    # Title generation
+
+
+TO USE IN PRODUCTION:
+├── worker/                               # Lambda worker (separate deployment)
+    ├── graph.py
+    ├── handler.py
+    ├── scraper.py
+    ├── search_tool.py
+    └── ...
+
