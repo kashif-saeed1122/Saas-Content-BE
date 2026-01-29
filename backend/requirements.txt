@@ -1,8 +1,29 @@
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
 psycopg2-binary
-pydantic
+python-jose[cryptography]
+python-multipart
+bcrypt
 python-dotenv
-boto3
+pydantic
 httpx
+
+# Celery & Redis
+Celery
+redis
+
+# For Lambda worker
+langchain
+langchain-openai
+langgraph
+playwright
+langchain-community
+
+gnews
+feedparser>=6.0.10
+requests
+
+# AWS
+boto3
+botocore

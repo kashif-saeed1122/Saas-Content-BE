@@ -49,3 +49,26 @@ docker-compose.override.yml
 
 celerybeat-schedule
 celerybeat.pid
+
+
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+*.so
+.env
+.env.local
+*.db
+*.sqlite
+*.sqlite3
+.git
+.gitignore
+README.md
+.DS_Store
+node_modules/
+*.log
+celerybeat-schedule
