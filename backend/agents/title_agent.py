@@ -6,6 +6,9 @@ import os
 from typing import List
 from langchain_openai import ChatOpenAI
 import json
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Use GPT-4 for high-quality title generation
 llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0.8, api_key=os.getenv("OPENAI_API_KEY"))
