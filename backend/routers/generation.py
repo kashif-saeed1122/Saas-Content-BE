@@ -45,6 +45,7 @@ async def generate_article(
         source_count=request.source_count,
         scheduled_at=request.scheduled_at,
         timezone=request.timezone,
+        webhook_integration_id=request.webhook_integration_id,  
         status="queued",
         topic=request.query_explanation[:50] + "..."
     )
@@ -119,6 +120,7 @@ async def generate_batch_articles(
             source_count=request.source_count,
             scheduled_at=request.scheduled_at,
             timezone=request.timezone,
+            webhook_integration_id=request.webhook_integration_id,
             status="queued",
             topic=title_obj.title
         )
