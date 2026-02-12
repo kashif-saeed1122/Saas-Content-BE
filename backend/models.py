@@ -33,6 +33,7 @@ class Article(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     campaign_id = Column(UUID(as_uuid=True), ForeignKey("campaigns.id"), nullable=True)
+    webhook_integration_id = Column(UUID(as_uuid=True), ForeignKey("webhook_integrations.id"), nullable=True)
     
     raw_query = Column(Text, nullable=False) 
     topic = Column(String(255))              
@@ -61,6 +62,7 @@ class Article(Base):
     campaign = relationship("Campaign", back_populates="articles")
     sources = relationship("SourceContent", back_populates="article", cascade="all, delete-orphan")
     brief = relationship("SEOBrief", back_populates="article", uselist=False, cascade="all, delete-orphan")
+    webhook_integration = relationship("WebhookIntegration")
 
 class Campaign(Base):
     __tablename__ = "campaigns"
@@ -89,6 +91,7 @@ class Campaign(Base):
     
     webhook_url = Column(Text, nullable=True)
     webhook_secret = Column(String(255), nullable=True)
+    webhook_integration_id = Column(UUID(as_uuid=True), ForeignKey("webhook_integrations.id"), nullable=True)
     
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
@@ -97,6 +100,7 @@ class Campaign(Base):
     
     user = relationship("User", back_populates="campaigns")
     articles = relationship("Article", back_populates="campaign")
+    webhook_integration = relationship("WebhookIntegration")
 
 class APIKey(Base):
     __tablename__ = "api_keys"
