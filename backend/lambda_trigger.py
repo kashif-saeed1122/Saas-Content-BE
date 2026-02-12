@@ -7,8 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 IS_LOCAL = os.getenv("LOCAL_DEV", "true").lower() == "true"
-LOCAL_LAMBDA_URL = "http://localhost:9000/2015-03-31/functions/function/invocations"
-
+LOCAL_LAMBDA_URL = "http://host.docker.internal:9000/2015-03-31/functions/function/invocations"
 async def trigger_worker(
     article_id: str, 
     query: str, 

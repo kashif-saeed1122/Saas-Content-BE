@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from database import engine, get_db
+from database import engine
 import models
-from routers import campaigns, credits, api_keys, integrations, auth, articles, generation, system
+from routers import internal
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -18,6 +18,8 @@ app.add_middleware(
     expose_headers=["*"]
 )
 
+from routers import auth, articles, generation, campaigns, credits, api_keys, integrations, system
+
 app.include_router(auth.router)
 app.include_router(articles.router)
 app.include_router(generation.router)
@@ -27,3 +29,4 @@ app.include_router(credits.router)
 app.include_router(api_keys.router)
 app.include_router(integrations.router)
 app.include_router(system.router)
+app.include_router(internal.router)
