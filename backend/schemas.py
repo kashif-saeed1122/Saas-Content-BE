@@ -10,6 +10,7 @@ class ArticleCreateRequest(BaseModel):
     source_count: int = 5
     scheduled_at: Optional[datetime] = None
     timezone: str = "UTC"
+    webhook_integration_id: Optional[str] = None
 
     class Config:
         populate_by_name = True
@@ -83,6 +84,7 @@ class BatchGenerationRequest(BaseModel):
     source_count: int = 5
     scheduled_at: Optional[datetime] = None
     timezone: str = "UTC"
+    webhook_integration_id: Optional[str] = None
 
 class CampaignCreateRequest(BaseModel):
     name: str
@@ -98,6 +100,7 @@ class CampaignCreateRequest(BaseModel):
     source_count: int = 5
     webhook_url: Optional[str] = None
     webhook_secret: Optional[str] = None
+    webhook_integration_id: Optional[str] = None
 
 class CampaignUpdateRequest(BaseModel):
     name: Optional[str] = None
