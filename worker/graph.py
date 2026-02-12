@@ -32,11 +32,16 @@ async def search_node(state: AgentState):
     print(f"--- 🕵️ Searching for: {state['topic']} ---")
     
     results = search_tool.invoke(state["topic"])
-    if not results:
-        return {"error": "No research sources found."}
+    
+    # CRITICAL: Stop if no sources found
+    if not results or len(results) == 0:
+        error_msg = f"❌ ABORT: No articles found for '{state['topic']}'. Cannot generate content without sources."
+        print(error_msg)
+        raise Exception(error_msg)
     
     # Respect source_count constraint
     top_results = results[:state['source_count']]
+    print(f"✅ Found {len(top_results)} sources to scrape")
     return {"urls": [r['url'] for r in top_results], "source_data": top_results}
 
 async def scraper_node(state: AgentState):
@@ -52,7 +57,9 @@ async def scraper_node(state: AgentState):
             enhanced_sources.append(original)
             
     if not enhanced_sources:
-        return {"error": "Failed to extract content from all sources."}
+        error_msg = "❌ ABORT: Failed to extract content from all sources."
+        print(error_msg)
+        raise Exception(error_msg)
         
     save_research_data(state['article_id'], enhanced_sources)
     return {"source_data": enhanced_sources}
@@ -382,7 +389,10 @@ def handler(event, context):
         }
         
     except Exception as e:
-        error_msg = str(e)        
+        error_msg = str(e)
+        print(f"❌ FATAL ERROR: {error_msg}")
+        
+        # Update article status to failed in database
         try:
             from sqlalchemy import create_engine, text
             from config import Config
@@ -390,12 +400,15 @@ def handler(event, context):
             with engine.connect() as conn:
                 conn.execute(text("""
                     UPDATE articles 
-                    SET status = 'failed'
+                    SET status = 'failed', 
+                        error_message = :error_msg,
+                        updated_at = NOW()
                     WHERE id = :id
-                """), {"id": initial_state['article_id']})
+                """), {"id": initial_state['article_id'], "error_msg": error_msg})
                 conn.commit()
-        except:
-            pass
+                print(f"✅ Article {initial_state['article_id']} marked as FAILED in database")
+        except Exception as db_error:
+            print(f"❌ Failed to update database: {db_error}")
         
         return {
             "statusCode": 500, 

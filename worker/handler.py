@@ -1,6 +1,9 @@
 import json
 import logging
 from typing import Dict, Any
+import httpx
+import asyncio
+
 
 from graph import generate_article_workflow
 from db_sync import save_research_data, finalize_article_in_db
@@ -83,8 +86,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 # Update status to 'scraping'
                 update_article_status(article_id, "scraping")
-                
-                # Save research data
                 save_research_data(article_id, result.get('sources', []))
                 
                 # Update status to 'writing'
@@ -96,7 +97,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     content=result.get('content', ''),
                     seo_brief=result.get('seo_brief', {})
                 )
-                
+
+                tokens = result.get('tokens_used', 0)
+                asyncio.run(notify_api_completion(article_id, tokens))
                 successful.append(article_id)
                 
             else:
@@ -141,22 +144,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     return response
 
-# For local testing
-if __name__ == "__main__":
-    # Test event
-    test_event = {
-        "Records": [
-            {
-                "body": json.dumps({
-                    "article_id": "test-article-123",
-                    "query": "AI trends in 2024",
-                    "category": "Technology",
-                    "target_length": 1500,
-                    "source_count": 5
-                })
-            }
-        ]
-    }
+async def notify_api_completion(article_id: str, tokens_used: int):
+    api_url = os.getenv("API_URL", "http://localhost:8000")
+    internal_secret = os.getenv("INTERNAL_SECRET", "change-me-in-production")
     
-    result = handler(test_event, None)
-    print(json.dumps(result, indent=2))
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            await client.post(
+                f"{api_url}/internal/article-complete",
+                json={"article_id": article_id, "tokens_used": tokens_used},
+                headers={"X-Internal-Secret": internal_secret}
+            )
+    except Exception as e:
+        logger.error(f"Failed to notify API: {e}")

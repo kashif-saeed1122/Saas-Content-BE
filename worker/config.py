@@ -11,11 +11,11 @@ class Config:
     
     # Database with connection pooling for Lambda
     # Lambda containers are reused, so pooling helps reuse connections
-    DEFAULT_DB_URL = "postgresql://postgres:1122@host.docker.internal:5432/seo_db"
+    DEFAULT_DB_URL = "postgresql://postgres.qprxzvyaptjxfiqahyty:kash!f515786@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres"
     DB_URL = os.getenv("DATABASE_URL", DEFAULT_DB_URL)
     
     # Connection pool settings for Lambda
-    DB_POOL_SIZE = int(os.getenv("DB_POOL_SIZE", "5"))
+    DB_POOL_SIZE = int(os.getenv("DB_POOL_SIZE", "15"))
     DB_MAX_OVERFLOW = int(os.getenv("DB_MAX_OVERFLOW", "10"))
     DB_POOL_TIMEOUT = int(os.getenv("DB_POOL_TIMEOUT", "30"))
     DB_POOL_RECYCLE = int(os.getenv("DB_POOL_RECYCLE", "3600"))
